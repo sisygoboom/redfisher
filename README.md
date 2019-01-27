@@ -2,10 +2,15 @@
 Tool for discovering new steem users who are acting in ways that benefit the community.
 
 ## Installation Instructions
+### .tar.gz
 - Have python 3 installeed
 - Unzip .tar.gz
 - Open command line or kernel and go to the unpacked folder
 - Run `python setup.py install`
+### .whl
+- Have python 3 installed
+- Open command line or kernel and go to download location
+- Run `pip install redfisher-xxxxx.whl`
 
 ## Useage
 To start a streaming from a week ago, min sp of 60 and posts per week of 2:
