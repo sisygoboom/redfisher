@@ -17,21 +17,21 @@ Tool for discovering new steem users who are acting in ways that benefit the com
 ## Useage
 To start a streaming from a week ago, min sp of 60 and posts per week of 2:
 ~~~
-import redfisher
+import redfisher as rf
 
-redfisher()
+rf.redfisher()
 ~~~
 
 Adding custom parameters:
 ~~~
-import redfisher
+import redfisher as rf
 
-redfisher(weeks=0.5, posts_per_week=1, min_sp=200)
+rf.redfisher(weeks=0.5, posts_per_week=1, min_sp=200)
 ~~~
 
 To check an individual account:
 ~~~
-import redfisher
+import redfisher as rf
 
-check(user='sisygoboom', min_sp=10000, weeks=1, posts_per_week=1)
+rf.check(user='sisygoboom', min_sp=10000, weeks=1, posts_per_week=1)
 ~~~
