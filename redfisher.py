@@ -12,9 +12,11 @@ from beem import Steem
 from datetime import datetime, timedelta
 import time
 import threading
+import click
 
 ######
 # TODO gauge voting and commenting
+# make account checks quicker
 ######
 
 n = NodeList()
@@ -22,16 +24,29 @@ nodes = n.get_nodes()
 s = Steem(nodes)
 b = Blockchain(s)
 
-
+@click.command()
+@click.option(
+        '--weeks',
+        default=1,
+        help='How many days worth of global posts we should be looking through'
+        )
+@click.option(
+        '--posts_per_week',
+        default=2,
+        help='The minimum number of times the accounts should post per week'
+        )
+@click.option(
+        '--min_sp',
+        default=60,
+        help='The highest steem power an account can have to be considered'
+        )
 def redfisher(
-        weeks=1,
-        posts_per_week=2,
-        min_sp=60):
+        weeks,
+        posts_per_week,
+        min_sp):
     """
-    Streams through all posts within the last two weeks.
-    weeks should be the number of weeks to look back in the users post history
-    posts_per_week should be the number of times the post per week
-    min_sp is the highest sp a user can have to be considered
+    Streams through all posts within given timeframe and sends accounts to be 
+    validated.
     """
     
     t1 = time.process_time()
@@ -66,7 +81,7 @@ def redfisher(
     
 def check(user, min_sp, weeks, posts_per_week):
     """
-    Check that the users meet the requirements
+    Check that the users meet the requirements.
     """
     
     acc = Account(user)
@@ -99,4 +114,7 @@ def check(user, min_sp, weeks, posts_per_week):
                     
             if powered_up == True and powered_down == False:
                 # all checks completed
-                print(user + " " + str(sp))
+                click.echo(user + " " + str(round(sp,3)))
+                
+if __name__ == '__main__':
+    redfisher()
