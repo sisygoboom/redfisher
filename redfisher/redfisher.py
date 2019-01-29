@@ -83,38 +83,57 @@ def check(user, min_sp, weeks, posts_per_week):
     """
     Check that the users meet the requirements.
     """
-    
-    acc = Account(user)
-    sp = acc.get_steem_power()
-    
-    if sp <= min_sp:
-        # get datetime oject for a week ago
-        posts_from = datetime.now() - timedelta(days=7)
-        # get comment history for the last week
-        post_history = acc.history(start=posts_from, only_ops=['comment'])
-        # count how amny posts they made in the last week
-        count = 0
-        for post in post_history:
-            if post['parent_author'] == user:
-                count += 1
-                
-        if count >= posts_per_week:
-            # get all time powerup and powerdown history
-            vest_history = acc.history(
-                    only_ops=['withdraw_vesting','transfer_to_vesting']
-                    )
-            # check for powerups and powerdowns
-            powered_up = False
-            powered_down = False
-            for change in vest_history:
-                if change['type'] == 'withdraw_vesting':
-                    powered_down = True
-                if change['type'] == 'transfer_to_vesting':
-                    powered_up = True
+    while True:
+        try:
+            acc = Account(user)
+            sp = acc.get_steem_power()
+            
+            if sp <= min_sp:
+                count = post_check(acc)
+                        
+                if count >= posts_per_week:
+                    powered_up, powered_down = vest_check(acc)
                     
-            if powered_up == True and powered_down == False:
-                # all checks completed
-                click.echo(user + " " + str(round(sp,3)))
+                    if powered_up and not powered_down:
+                        # all checks completed
+                        click.echo(user + " " + str(round(sp,3)))
+            break
+        except:
+            failover()
+                
+def vest_check(acc):
+    # get all time powerup and powerdown history
+    vest_history = acc.history(
+            only_ops=['withdraw_vesting','transfer_to_vesting']
+            )
+    # check for powerups and powerdowns
+    powered_up = False
+    powered_down = False
+    for change in vest_history:
+        if change['type'] == 'withdraw_vesting':
+            powered_down = True
+        if change['type'] == 'transfer_to_vesting':
+            powered_up = True
+    return powered_up, powered_down
+
+def post_check(acc):
+    t1 = time.process_time()
+    # get datetime oject for a week ago
+    posts_from = datetime.now() - timedelta(days=7)
+    # get comment history for the last week
+    post_history = acc.history(start=posts_from, only_ops=['comment'])
+    # count how amny posts they made in the last week
+    count = 0
+    for post in post_history:
+        if post['parent_author'] == acc.name:
+            count += 1
+    t2 = time.process_time()
+    #print(t2-t1)
+    return count
+
+def failover():
+    global nodes
+    nodes = nodes[1:] + [nodes[0]]
                 
 if __name__ == '__main__':
     redfisher()
