@@ -3,21 +3,9 @@ Tool for discovering new steem users who are acting in ways that benefit the com
 
 ## Installation Instructions
 
-### [option 1] setup.py
 - Have python installed
-- Download everything
+- Clone repo
 - Open command line or kernel open in the file where setup.py is
-- Run `python setup.py install`
-
-### [option 2] .whl
-- Have python 3 installed
-- Open command line or kernel and go to download location
-- Run `pip install redfisher-xxxxx.whl`
-
-### [option 3] .tar.gz
-- Have python 3 installeed
-- Unzip .tar.gz
-- Open command line or kernel and go to the unpacked folder
 - Run `python setup.py install`
 
 ## Useage
